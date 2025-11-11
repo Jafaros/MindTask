@@ -5,3 +5,8 @@
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton-svelte';
 @import '@skeletonlabs/skeleton/themes/cerberus';
+
+h1 {
+	font-size: 48px;
+	line-height: 100%;
+}
