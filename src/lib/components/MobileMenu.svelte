@@ -3,19 +3,17 @@
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { fade, fly } from 'svelte/transition';
 
-	import logo from '$lib/assets/favicon.svg';
+	import logo from '$lib/assets/MindTask CMYK 2.png';
 
 	const { onClick } = $props<{ onClick: () => void }>();
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<div
-	class="fixed top-0 left-0 z-40 flex h-full w-full bg-black/50"
-	onclick={onClick}
-	transition:fade
->
-	<div class="h-full w-3/4 bg-white p-4 shadow-lg" in:fly={{ x: -300 }} out:fly={{ x: -300 }}>
+<div class="fixed top-0 left-0 z-40 flex h-full w-full">
+	<div
+		class="relative z-1 h-full w-3/4 bg-white p-4 shadow-lg"
+		in:fly={{ x: -300, duration: 200 }}
+		out:fly={{ x: -300, duration: 200 }}
+	>
 		<div class="flex items-center gap-3">
 			<img src={logo} alt="MindTask Logo" class="h-12 w-12" />
 			<div class="text-3xl font-bold">MindTask</div>
@@ -31,4 +29,12 @@
 			{/each}
 		</div>
 	</div>
+
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<div
+		class="absolute z-0 h-full w-full bg-black/50"
+		onclick={onClick}
+		transition:fade={{ duration: 200 }}
+	></div>
 </div>

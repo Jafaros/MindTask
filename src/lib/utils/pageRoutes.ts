@@ -15,14 +15,14 @@ export const pageRoutes: PageRoute[] = [
 		icon: faHouse
 	},
 	{
-		path: '/settings',
-		title: 'Nastavení',
-		icon: faGear
-	},
-	{
 		path: '/tasks',
 		title: 'Všechny úkoly',
 		icon: faList
+	},
+	{
+		path: '/settings',
+		title: 'Nastavení',
+		icon: faGear
 	}
 ];
 
