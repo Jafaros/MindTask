@@ -6,6 +6,11 @@
 @import '@skeletonlabs/skeleton-svelte';
 @import '@skeletonlabs/skeleton/themes/cerberus';
 
+body {
+	background-color: white;
+	color: black;
+}
+
 h1 {
 	font-size: 48px;
 	line-height: 100%;
