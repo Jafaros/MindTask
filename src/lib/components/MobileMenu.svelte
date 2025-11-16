@@ -16,15 +16,15 @@
 	>
 		<div class="flex items-center gap-3">
 			<img src={logo} alt="MindTask Logo" class="h-12 w-12" />
-			<div class="text-3xl font-bold">MindTask</div>
+			<div class="text-3xl font-bold text-black/70">MindTask</div>
 		</div>
-		<div class="mt-5 flex flex-col">
+		<div class="mt-5 flex flex-col text-black/70">
 			{#each pageRoutes as route}
 				<a
 					onclick={onClick}
 					href={route.path}
 					class="flex items-center gap-3 py-4 text-lg font-semibold hover:bg-gray-200"
-					><FontAwesomeIcon icon={route.icon} class="text-2xl text-black" />{route.title}</a
+					><FontAwesomeIcon icon={route.icon} class="text-2xl text-black/70" />{route.title}</a
 				>
 			{/each}
 		</div>

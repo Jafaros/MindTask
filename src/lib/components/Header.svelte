@@ -19,6 +19,6 @@
 	<button onclick={() => (mobileMenuOpen = true)} class="size-8"
 		><FontAwesomeIcon icon={faBars} class="text-xl text-black" /></button
 	>
-	<div class="text-1xl font-bold text-zinc-700">{pageTitle}</div>
+	<div class="text-xl font-bold text-zinc-700">{pageTitle}</div>
 	<button class="size-8"><FontAwesomeIcon icon={faSearch} class="text-xl text-black" /></button>
 </div>

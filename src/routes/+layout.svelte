@@ -2,8 +2,13 @@
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import Header from '$lib/components/Header.svelte';
+	import { SetTaskState } from '$lib/services/task.service.svelte';
+	import { SetTagState } from '$lib/services/tag.service.svelte';
 
 	let { children } = $props();
+
+	SetTaskState();
+	SetTagState();
 </script>
 
 <svelte:head>
