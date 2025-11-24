@@ -1,7 +1,5 @@
 <script lang="ts">
-	import Tag from '$lib/components/Tag.svelte';
 	import Task from '$lib/components/Task.svelte';
-	import { GetTagState, type ITag } from '$lib/services/tag.service.svelte';
 	import { GetTaskState } from '$lib/services/task.service.svelte';
 	import { faPlus } from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
@@ -10,9 +8,6 @@
 	import TaskModal from '$lib/components/TaskModal.svelte';
 
 	const taskState = GetTaskState();
-	const tagState = GetTagState();
-
-	let activeTag: ITag = $state<ITag>(tagState.GetAllTags()[0] || null);
 
 	let mounted = $state(false);
 
@@ -29,22 +24,10 @@
 
 {#if mounted}
 	<div in:fade={{ duration: 200 }}>
-		<div class="no-scrollbar flex items-center gap-2 overflow-x-auto">
-			{#each tagState.GetAllTags() as tag, i}
-				<Tag {tag} {i} active={activeTag?.id === tag.id} onSelect={(t) => (activeTag = t)} />
-			{/each}
-		</div>
-
 		<div class="mt-4 flex flex-col gap-2">
-			{#if activeTag.name == 'Dnes'}
-				{#each taskState.GetTasksDueToday() as task, i}
-					<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
-				{/each}
-			{:else}
-				{#each taskState.GetTasksByTag(activeTag.id) as task, i}
-					<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
-				{/each}
-			{/if}
+			{#each taskState.GetAllTasksToComplete() as task, i}
+				<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
+			{/each}
 		</div>
 
 		<button

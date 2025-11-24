@@ -14,31 +14,31 @@ class TagService {
 		// Initialize with some dummy data
 		this.tags = [
 			{
-				id: '0',
-				name: 'Všechny',
+				id: crypto.randomUUID(),
+				name: 'Dnes',
 				color: '#808080',
 				assignable: false
 			},
 			{
-				id: '1',
+				id: crypto.randomUUID(),
 				name: 'Práce',
 				color: '#0000ff',
 				assignable: true
 			},
 			{
-				id: '2',
+				id: crypto.randomUUID(),
 				name: 'Osobní',
 				color: '#0fff00',
 				assignable: true
 			},
 			{
-				id: '3',
+				id: crypto.randomUUID(),
 				name: 'Nákupy',
 				color: '#ff0000',
 				assignable: true
 			},
 			{
-				id: '4',
+				id: crypto.randomUUID(),
 				name: 'Studium',
 				color: '#ff00ff',
 				assignable: true
@@ -61,6 +61,18 @@ class TagService {
 	public GetAvailableTags = $derived(() => {
 		return this.tags.filter((tag) => tag.assignable);
 	});
+
+	public AddTag = (tag: ITag): void => {
+		this.tags.push(tag);
+	};
+
+	public RemoveTag = (tagId: string): void => {
+		this.tags = this.tags.filter((tag) => tag.id !== tagId);
+	};
+
+	public UpdateTag = (updatedTag: ITag): void => {
+		this.tags = this.tags.map((tag) => (tag.id === updatedTag.id ? updatedTag : tag));
+	};
 }
 
 const TAG_KEY = Symbol('TAG_KEY');

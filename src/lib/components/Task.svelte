@@ -1,18 +1,29 @@
 <script lang="ts">
-	import { TaskPriority, type Task } from '$lib/services/task.service.svelte';
+	import { TaskPriority, type ITask } from '$lib/services/task.service.svelte';
+	import { GetReadableTextFromColor } from '$lib/utils/color';
 	import { fly } from 'svelte/transition';
+	import TaskModal from './TaskModal.svelte';
 
 	const { task, i, onToggle } = $props<{
-		task: Task;
+		task: ITask;
 		i: number;
 		onToggle: (taskId: string, value: boolean) => void;
 	}>();
+
+	let taskModalOpen = $state(false);
 </script>
 
+{#if taskModalOpen}
+	<TaskModal {task} type={'edit'} onClose={() => (taskModalOpen = false)} />
+{/if}
+
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
 	class="flex items-center justify-between gap-5 rounded-lg bg-gray-100 p-4 transition"
 	class:opacity-50={task.completed}
 	in:fly={{ y: 20, delay: i * 50 }}
+	onclick={() => (taskModalOpen = true)}
 >
 	<div class="flex items-center justify-center">
 		<input
@@ -65,8 +76,11 @@
 			>
 		{/if}
 		{#if task.tag}
-			<span class="rounded-full bg-{task.tag.color}-600 px-3 py-1 text-xs text-{task.tag.color}-200"
-				>{task.tag.name}</span
+			<span
+				class="rounded-full px-3 py-1 text-xs"
+				style="background-color: {task.tag.color}; color: {GetReadableTextFromColor(
+					task.tag.color
+				)};">{task.tag.name}</span
 			>
 		{/if}
 	</div>

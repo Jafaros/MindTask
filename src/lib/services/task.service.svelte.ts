@@ -1,7 +1,7 @@
 import { getContext, setContext } from 'svelte';
-import type { ITag } from './tag.service.svelte';
+import { GetTagState, type ITag } from './tag.service.svelte';
 
-export interface Task {
+export interface ITask {
 	id: string;
 	title: string;
 	description?: string;
@@ -18,7 +18,8 @@ export enum TaskPriority {
 }
 
 class TaskService {
-	private tasks = $state<Task[]>([]);
+	private tasks = $state<ITask[]>([]);
+	private tagState = GetTagState();
 
 	constructor() {
 		// Initialize with some dummy data
@@ -43,12 +44,13 @@ class TaskService {
 				title: 'Task 3',
 				completed: false,
 				priority: TaskPriority.High,
-				tag: { id: '1', name: 'Práce', color: '#0000ff', assignable: true }
+				dueDate: new Date(),
+				tag: this.tagState.GetAllTags()[1]
 			}
 		];
 	}
 
-	public LoadTasks = (tasks: Task[]): void => {
+	public LoadTasks = (tasks: ITask[]): void => {
 		this.tasks = tasks;
 	};
 
@@ -65,19 +67,21 @@ class TaskService {
 			return this.tasks;
 		}
 
-		return this.tasks.filter((task) => task.tag?.id === tagId);
+		return this.tasks
+			.filter((task) => task.tag?.id === tagId)
+			.sort((a, b) => Number(a.completed) - Number(b.completed));
 	}
 
 	public GetTaskById(taskId: string) {
 		return this.tasks.find((task) => task.id === taskId);
 	}
 
-	public UpdateTask(updatedTask: Task): void {
+	public UpdateTask(updatedTask: ITask): void {
 		this.tasks = this.tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task));
 	}
 
-	public GetTasksGroupedByPriority = $derived<() => Record<string, Task[]>>(() => {
-		return this.tasks.reduce((groups: Record<string, Task[]>, task) => {
+	public GetTasksGroupedByPriority = $derived<() => Record<string, ITask[]>>(() => {
+		return this.tasks.reduce((groups: Record<string, ITask[]>, task) => {
 			const priority = task.priority || 'none';
 			if (!groups[priority]) {
 				groups[priority] = [];
@@ -87,8 +91,8 @@ class TaskService {
 		}, {});
 	});
 
-	public GetTasksGroupedByTag = $derived<() => Record<string, Task[]>>(() => {
-		const tagGroups: Record<string, Task[]> = {};
+	public GetTasksGroupedByTag = $derived<() => Record<string, ITask[]>>(() => {
+		const tagGroups: Record<string, ITask[]> = {};
 		this.tasks.forEach((task) => {
 			if (!task.tag) return;
 
@@ -100,20 +104,26 @@ class TaskService {
 		return tagGroups;
 	});
 
-	public GetTasksDueToday = $derived<() => Task[]>(() => {
+	public GetTasksDueToday = $derived<() => ITask[]>(() => {
 		const today = new Date();
-		return this.tasks.filter((task) => {
-			if (!task.dueDate) return false;
-			const dueDate = new Date(task.dueDate);
-			return (
-				dueDate.getDate() === today.getDate() &&
-				dueDate.getMonth() === today.getMonth() &&
-				dueDate.getFullYear() === today.getFullYear()
-			);
-		});
+		return this.tasks
+			.filter((task) => {
+				if (!task.dueDate) return false;
+				const dueDate = new Date(task.dueDate);
+				return (
+					dueDate.getDate() === today.getDate() &&
+					dueDate.getMonth() === today.getMonth() &&
+					dueDate.getFullYear() === today.getFullYear()
+				);
+			})
+			.sort((a, b) => Number(a.completed) - Number(b.completed));
 	});
 
-	public AddTask(task: Task): void {
+	public GetAllTasksToComplete = $derived(() => {
+		return this.tasks.filter((task) => !task.completed);
+	});
+
+	public AddTask(task: ITask): void {
 		this.tasks.push(task);
 	}
 
