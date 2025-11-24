@@ -23,15 +23,18 @@
 	class="flex items-center justify-between gap-5 rounded-lg bg-gray-100 p-4 transition"
 	class:opacity-50={task.completed}
 	in:fly={{ y: 20, delay: i * 50 }}
-	onclick={() => (taskModalOpen = true)}
+	onclick={(e) => {
+		e.stopPropagation();
+		taskModalOpen = true;
+	}}
 >
 	<div class="flex items-center justify-center">
 		<input
 			type="checkbox"
 			class="size-7 cursor-pointer rounded-full border border-gray-300 text-blue-500 focus:ring-0"
 			checked={task.completed}
+			onclick={(e) => e.stopPropagation()}
 			onchange={(e) => {
-				e.preventDefault();
 				onToggle(task.id, e.currentTarget.checked);
 			}}
 		/>

@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { GetTagState, type ITag } from '$lib/services/tag.service.svelte';
+	import { faClose } from '@fortawesome/free-solid-svg-icons';
+	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { fade } from 'svelte/transition';
 
 	const { tag, type, onClose } = $props<{
@@ -51,8 +53,12 @@
 	{#if type === 'create'}
 		<form
 			onsubmit={CreateTag}
-			class="max-h-[95%] w-[95%] overflow-y-auto rounded-lg bg-white p-6 shadow-lg"
+			class="relative max-h-[95%] w-[95%] overflow-y-auto rounded-lg bg-white p-6 shadow-lg"
 		>
+			<button type="button" class="absolute top-3 right-3 font-bold" onclick={onClose}
+				><FontAwesomeIcon icon={faClose} class="text-xl text-black/70" /></button
+			>
+
 			<h2 class="mb-4 text-xl font-semibold">Vytvořit nový štítek</h2>
 
 			<div class="flex flex-col gap-4">
@@ -74,11 +80,6 @@
 			</div>
 
 			<div class="flex items-center justify-center gap-2">
-				<button
-					type="button"
-					class="mt-4 rounded bg-blue-500 px-4 py-2 text-white"
-					onclick={onClose}>Zavřít</button
-				>
 				<button type="submit" class="mt-4 rounded bg-green-700 px-4 py-2 text-white"
 					>Vytvořit</button
 				>
@@ -87,8 +88,12 @@
 	{:else if type === 'edit'}
 		<form
 			onsubmit={EditTag}
-			class="max-h-[95%] w-[95%] overflow-y-auto rounded-lg bg-white p-6 shadow-lg"
+			class="relative max-h-[95%] w-[95%] overflow-y-auto rounded-lg bg-white p-6 shadow-lg"
 		>
+			<button type="button" class="absolute top-3 right-3 font-bold" onclick={onClose}
+				><FontAwesomeIcon icon={faClose} class="text-xl text-black/70" /></button
+			>
+
 			<h2 class="mb-4 text-xl font-semibold">Upravit štítek</h2>
 
 			<div class="flex flex-col gap-4">
@@ -110,11 +115,6 @@
 			</div>
 
 			<div class="flex items-center justify-center gap-2">
-				<button
-					type="button"
-					class="mt-4 rounded bg-blue-500 px-4 py-2 text-white"
-					onclick={onClose}>Zavřít</button
-				>
 				<button
 					type="button"
 					class="mt-4 rounded bg-red-700 px-4 py-2 text-white"

@@ -30,18 +30,18 @@
 {#if mounted}
 	<div in:fade={{ duration: 200 }}>
 		<div class="no-scrollbar flex items-center gap-2 overflow-x-auto">
-			{#each tagState.GetAllTags() as tag, i}
+			{#each tagState.GetAllTags() as tag, i (tag.id)}
 				<Tag {tag} {i} active={activeTag?.id === tag.id} onSelect={(t) => (activeTag = t)} />
 			{/each}
 		</div>
 
 		<div class="mt-4 flex flex-col gap-2">
 			{#if activeTag.name == 'Dnes'}
-				{#each taskState.GetTasksDueToday() as task, i}
+				{#each taskState.GetTasksDueToday() as task, i (task.id)}
 					<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
 				{/each}
 			{:else}
-				{#each taskState.GetTasksByTag(activeTag.id) as task, i}
+				{#each taskState.GetTasksByTag(activeTag.id) as task, i (task.id)}
 					<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
 				{/each}
 			{/if}

@@ -22,25 +22,25 @@ class TagService {
 			{
 				id: crypto.randomUUID(),
 				name: 'Práce',
-				color: '#0000ff',
+				color: '#5959c5',
 				assignable: true
 			},
 			{
 				id: crypto.randomUUID(),
 				name: 'Osobní',
-				color: '#0fff00',
+				color: '#d48104ff',
 				assignable: true
 			},
 			{
 				id: crypto.randomUUID(),
 				name: 'Nákupy',
-				color: '#ff0000',
+				color: '#9e3c3cff',
 				assignable: true
 			},
 			{
 				id: crypto.randomUUID(),
 				name: 'Studium',
-				color: '#ff00ff',
+				color: '#f0b1f0ff',
 				assignable: true
 			}
 		];

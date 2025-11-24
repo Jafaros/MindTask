@@ -29,7 +29,7 @@
 {#if mounted}
 	<div in:fade={{ duration: 200 }}>
 		<div class="mt-4 grid grid-cols-6 gap-2 max-md:grid-cols-3 max-sm:grid-cols-1">
-			{#each tagState.GetAvailableTags() as tag, i}
+			{#each tagState.GetAvailableTags() as tag, i (tag.id)}
 				<button
 					in:fly={{ x: 20, delay: i * 50 }}
 					class="flex justify-center rounded-full px-3 py-1 text-lg font-semibold"
