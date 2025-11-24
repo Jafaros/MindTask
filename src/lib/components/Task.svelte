@@ -30,7 +30,10 @@
 			type="checkbox"
 			class="size-7 cursor-pointer rounded-full border border-gray-300 text-blue-500 focus:ring-0"
 			checked={task.completed}
-			onchange={(e) => onToggle(task.id, e.currentTarget.checked)}
+			onchange={(e) => {
+				e.preventDefault();
+				onToggle(task.id, e.currentTarget.checked);
+			}}
 		/>
 	</div>
 	<div
