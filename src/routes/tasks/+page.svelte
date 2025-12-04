@@ -24,7 +24,7 @@
 
 {#if mounted}
 	<div in:fade={{ duration: 200 }}>
-		<div class="mt-4 flex flex-col gap-2">
+		<div class="flex flex-col gap-2">
 			{#each taskState.GetAllTasksToComplete() as task, i (task.id)}
 				<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
 			{/each}

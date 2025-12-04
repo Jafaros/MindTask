@@ -1,5 +1,8 @@
 import { getContext, setContext } from 'svelte';
 import { Preferences } from '@capacitor/preferences';
+import { GetTagState } from './tag.service.svelte';
+
+const STORAGE_KEY = 'mindtask_tasks';
 
 export interface ITask {
 	id: string;
@@ -17,7 +20,12 @@ export enum TaskPriority {
 	High = 'Vysoká'
 }
 
-const STORAGE_KEY = 'mindtask_tasks';
+const priorityOrder: Record<TaskPriority | 'none', number> = {
+	[TaskPriority.High]: 1,
+	[TaskPriority.Medium]: 2,
+	[TaskPriority.Low]: 3,
+	none: 4
+};
 
 class TaskService {
 	private tasks = $state<ITask[]>([]);
@@ -57,16 +65,6 @@ class TaskService {
 		return this.tasks;
 	});
 
-	public GetTasksByTag = (tagId: string) => {
-		if (tagId === '0') {
-			return this.tasks;
-		}
-
-		return this.tasks
-			.filter((task) => task.tagId === tagId)
-			.sort((a, b) => Number(a.completed) - Number(b.completed));
-	};
-
 	public GetTaskById = $derived<(taskId: string) => ITask | undefined>((taskId) => {
 		return this.tasks.find((task) => task.id === taskId);
 	});
@@ -100,24 +98,45 @@ class TaskService {
 		return tagGroups;
 	});
 
-	public GetTasksDueToday = $derived<() => ITask[]>(() => {
+	public GetTasksByTag(tagId: string): ITask[] {
+		const tagState = GetTagState();
+		const tag = tagState.GetTagById(tagId);
+
+		if (tag?.name === 'Dnes' && !tag.assignable) {
+			return this.GetTasksDueToday();
+		}
+
+		return this.tasks
+			.filter((task) => task.tagId === tagId)
+			.sort((a, b) => Number(a.completed) - Number(b.completed));
+	}
+
+	public GetTasksDueToday(): ITask[] {
 		const today = new Date();
 		return this.tasks
 			.filter((task) => {
 				if (!task.dueDate) return false;
 				const dueDate = new Date(task.dueDate);
-				return (
-					dueDate.getDate() === today.getDate() &&
-					dueDate.getMonth() === today.getMonth() &&
-					dueDate.getFullYear() === today.getFullYear()
-				);
+				return dueDate.toDateString() === today.toDateString();
 			})
 			.sort((a, b) => Number(a.completed) - Number(b.completed));
-	});
+	}
 
 	public GetAllTasksToComplete = $derived(() => {
-		return this.tasks.filter((task) => !task.completed);
+		return this.tasks
+			.filter((task) => !task.completed)
+			.sort((a, b) => {
+				const pa = priorityOrder[a.priority ?? 'none'];
+				const pb = priorityOrder[b.priority ?? 'none'];
+				return pa - pb; // lower number = higher priority
+			});
 	});
+
+	public GetTasksByName = (searchTerm: string): ITask[] => {
+		if (!searchTerm) return [];
+		const lowerSearchTerm = searchTerm.toLowerCase();
+		return this.tasks.filter((task) => task.title.toLowerCase().includes(lowerSearchTerm));
+	};
 
 	public AddTask(task: ITask): void {
 		this.tasks.push(task);

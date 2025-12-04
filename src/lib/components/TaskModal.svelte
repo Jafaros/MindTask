@@ -78,7 +78,7 @@
 			onsubmit={CreateTask}
 			class="relative max-h-[95%] w-[95%] overflow-y-auto rounded-lg bg-white p-6 shadow-lg"
 		>
-			<button type="button" class="absolute top-3 right-3 font-bold" onclick={onClose}
+			<button type="button" class="absolute top-4 right-3 font-bold" onclick={onClose}
 				><FontAwesomeIcon icon={faClose} class="text-xl text-black/70" /></button
 			>
 
@@ -184,7 +184,7 @@
 				><FontAwesomeIcon icon={faClose} class="text-xl text-black/70" /></button
 			>
 
-			<h2 class="mb-4 text-xl font-semibold">Vytvořit nový úkol</h2>
+			<h2 class="mb-4 text-xl font-semibold">Upravit úkol</h2>
 
 			<div class="flex flex-col gap-4">
 				<label class="flex flex-col">

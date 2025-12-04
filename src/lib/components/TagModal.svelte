@@ -90,7 +90,7 @@
 			onsubmit={EditTag}
 			class="relative max-h-[95%] w-[95%] overflow-y-auto rounded-lg bg-white p-6 shadow-lg"
 		>
-			<button type="button" class="absolute top-3 right-3 font-bold" onclick={onClose}
+			<button type="button" class="absolute top-4 right-4 font-bold" onclick={onClose}
 				><FontAwesomeIcon icon={faClose} class="text-xl text-black/70" /></button
 			>
 

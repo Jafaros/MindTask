@@ -3,7 +3,7 @@
 	import { GetReadableTextFromColor } from '$lib/utils/color';
 	import { fly } from 'svelte/transition';
 	import TaskModal from './TaskModal.svelte';
-	import { GetTagState } from '$lib/services/tag.service.svelte';
+	import { GetTagState, type ITag } from '$lib/services/tag.service.svelte';
 
 	const { task, i, onToggle } = $props<{
 		task: ITask;
@@ -11,10 +11,10 @@
 		onToggle: (taskId: string, value: boolean) => void;
 	}>();
 
-	let taskModalOpen = $state(false);
+	let taskModalOpen = $state<boolean>(false);
 
 	const tagState = GetTagState();
-	const tag = $derived(tagState.GetTagById(task.tagId ?? -1));
+	const tag: ITag | undefined = $derived(tagState.GetTagById(task.tagId ?? -1));
 </script>
 
 {#if taskModalOpen}
@@ -26,7 +26,7 @@
 <div
 	class="flex items-center justify-between gap-5 rounded-lg bg-gray-100 p-4 transition"
 	class:opacity-50={task.completed}
-	in:fly={{ y: 20, delay: i * 50 }}
+	in:fly={{ x: -50, delay: i * 50, duration: 200 }}
 	onclick={(e) => {
 		e.stopPropagation();
 		taskModalOpen = true;

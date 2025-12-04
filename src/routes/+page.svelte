@@ -37,15 +37,9 @@
 
 		<div class="mt-4 flex flex-col gap-2">
 			{#if activeTag}
-				{#if activeTag.name == 'Dnes'}
-					{#each taskState.GetTasksDueToday() as task, i (task.id)}
-						<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
-					{/each}
-				{:else}
-					{#each taskState.GetTasksByTag(activeTag.id) as task, i (task.id)}
-						<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
-					{/each}
-				{/if}
+				{#each taskState.GetTasksByTag(activeTag.id) as task, i (`${activeTag?.id}-${task.id}`)}
+					<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
+				{/each}
 			{/if}
 		</div>
 
