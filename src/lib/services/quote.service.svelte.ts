@@ -76,7 +76,6 @@ class QuoteService {
 
 	public isSaved = (quote: IQuote): boolean => {
 		const savedQuote = this.quotes.filter((q) => q.author === quote.author && q.text == quote.text);
-		console.log(savedQuote);
 		return savedQuote.length > 0 ? true : false;
 	};
 

@@ -1,9 +1,12 @@
 <script lang="ts">
-	let { enabled = $bindable() } = $props<{ enabled: boolean }>();
+	let { enabled = $bindable(), onChange } = $props<{
+		enabled: boolean;
+		onChange: (value: boolean) => void;
+	}>();
 </script>
 
 <label class="flex cursor-pointer items-center select-none">
-	<input type="checkbox" bind:checked={enabled} class="peer sr-only" />
+	<input type="checkbox" bind:checked={enabled} class="peer sr-only" onchange={onChange} />
 
 	<div
 		class="relative h-6 w-11 rounded-full bg-gray-300 transition-colors duration-300 peer-checked:bg-blue-500"

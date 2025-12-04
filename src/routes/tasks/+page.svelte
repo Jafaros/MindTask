@@ -41,7 +41,7 @@
 			{#each groups as group, i}
 				<div
 					class="rounded-lg border border-zinc-300 p-3"
-					in:fly={{ x: -50, duration: 200 }}
+					in:fly={{ x: -100, duration: 200 }}
 					out:fade={{ duration: 200 }}
 				>
 					<button
@@ -58,7 +58,7 @@
 						{/if}
 					</button>
 					{#if displayedGroups.includes(i)}
-						<div class="flex flex-col gap-2" transition:slide>
+						<div class="flex flex-col gap-2" transition:slide={{ duration: 200 }}>
 							{#each group.tasks as task, j (task.id)}
 								<Task {task} i={j} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
 							{/each}

@@ -117,7 +117,7 @@
 
 				<div class="mt-3 flex items-center justify-between gap-2">
 					<span class="font-medium">Nastavit připomenutí</span>
-					<Switch bind:enabled={reminderSet} />
+					<Switch bind:enabled={reminderSet} onChange={() => {}} />
 				</div>
 
 				{#if reminderSet}
@@ -170,8 +170,7 @@
 			</div>
 
 			<div class="flex items-center justify-center gap-2">
-				<button type="submit" class="mt-4 rounded bg-green-700 px-4 py-2 text-white"
-					>Vytvořit</button
+				<button type="submit" class="mt-4 rounded bg-blue-500 px-4 py-2 text-white">Vytvořit</button
 				>
 			</div>
 		</form>
@@ -219,7 +218,7 @@
 
 				<div class="mt-3 flex items-center justify-between gap-2">
 					<span class="font-medium">Nastavit připomenutí</span>
-					<Switch bind:enabled={reminderSet} />
+					<Switch bind:enabled={reminderSet} onChange={() => {}} />
 				</div>
 
 				{#if reminderSet}
@@ -278,8 +277,7 @@
 					onclick={RemoveTask}>Smazat</button
 				>
 
-				<button type="submit" class="mt-4 rounded bg-green-700 px-4 py-2 text-white">Upravit</button
-				>
+				<button type="submit" class="mt-4 rounded bg-blue-500 px-4 py-2 text-white">Uložit</button>
 			</div>
 		</form>
 	{/if}

@@ -7,19 +7,29 @@
 	import { GetQuoteState, SetQuoteState, type IQuote } from '$lib/services/quote.service.svelte';
 	import { onMount } from 'svelte';
 	import QuoteModal from '$lib/components/QuoteModal.svelte';
+	import { GetSettingsState, SetSettingsState } from '$lib/services/settings.service.svelte';
 
 	let { children } = $props();
 
+	SetSettingsState();
 	SetTagState();
 	SetTaskState();
 	SetQuoteState();
 
+	const settingsState = GetSettingsState();
+
 	const quoteState = GetQuoteState();
 	let quote = $state<IQuote | undefined>(undefined);
-	let quoteModalVisible = $state<boolean>(true);
+	let displayQuoteOnLaunch = $derived<boolean>(settingsState.GetDisplayQuoteOnLaunch());
+	let quoteModalVisible = $state<boolean>();
 
-	onMount(async () => {
-		quote = await quoteState.FetchRandomQuoteFromAPI();
+	$effect(() => {
+		if (displayQuoteOnLaunch) {
+			(async () => {
+				quote = await quoteState.FetchRandomQuoteFromAPI();
+				quoteModalVisible = true;
+			})();
+		}
 	});
 </script>
 
@@ -33,11 +43,11 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<Header />
-
 {#if quote && quoteModalVisible}
 	<QuoteModal {quote} onClose={() => (quoteModalVisible = false)} />
 {/if}
+
+<Header />
 
 <div class="border-box relative bg-white p-5 text-black">
 	{@render children()}

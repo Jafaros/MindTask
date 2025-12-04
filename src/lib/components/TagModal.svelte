@@ -80,8 +80,7 @@
 			</div>
 
 			<div class="flex items-center justify-center gap-2">
-				<button type="submit" class="mt-4 rounded bg-green-700 px-4 py-2 text-white"
-					>Vytvořit</button
+				<button type="submit" class="mt-4 rounded bg-blue-500 px-4 py-2 text-white">Vytvořit</button
 				>
 			</div>
 		</form>
@@ -120,8 +119,7 @@
 					class="mt-4 rounded bg-red-700 px-4 py-2 text-white"
 					onclick={RemoveTag}>Smazat</button
 				>
-				<button type="submit" class="mt-4 rounded bg-green-700 px-4 py-2 text-white">Upravit</button
-				>
+				<button type="submit" class="mt-4 rounded bg-blue-500 px-4 py-2 text-white">Uložit</button>
 			</div>
 		</form>
 	{/if}
