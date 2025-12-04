@@ -12,7 +12,7 @@
 	const taskState = GetTaskState();
 	const tagState = GetTagState();
 
-	let activeTag: ITag = $state<ITag>(tagState.GetAllTags()[0] || null);
+	let activeTag = $derived<ITag | null>(tagState.GetAllTags()[0] || null);
 
 	let mounted = $state(false);
 
@@ -36,14 +36,16 @@
 		</div>
 
 		<div class="mt-4 flex flex-col gap-2">
-			{#if activeTag.name == 'Dnes'}
-				{#each taskState.GetTasksDueToday() as task, i (task.id)}
-					<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
-				{/each}
-			{:else}
-				{#each taskState.GetTasksByTag(activeTag.id) as task, i (task.id)}
-					<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
-				{/each}
+			{#if activeTag}
+				{#if activeTag.name == 'Dnes'}
+					{#each taskState.GetTasksDueToday() as task, i (task.id)}
+						<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
+					{/each}
+				{:else}
+					{#each taskState.GetTasksByTag(activeTag.id) as task, i (task.id)}
+						<Task {task} {i} onToggle={(id, val) => taskState.ToggleCompleted(id, val)} />
+					{/each}
+				{/if}
 			{/if}
 		</div>
 

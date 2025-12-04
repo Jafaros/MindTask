@@ -1,5 +1,5 @@
 import { getContext, setContext } from 'svelte';
-import { GetTagState, type ITag } from './tag.service.svelte';
+import { Preferences } from '@capacitor/preferences';
 
 export interface ITask {
 	id: string;
@@ -8,7 +8,7 @@ export interface ITask {
 	completed: boolean;
 	dueDate?: Date;
 	priority?: TaskPriority;
-	tag?: ITag;
+	tagId?: string;
 }
 
 export enum TaskPriority {
@@ -17,41 +17,36 @@ export enum TaskPriority {
 	High = 'Vysoká'
 }
 
+const STORAGE_KEY = 'mindtask_tasks';
+
 class TaskService {
 	private tasks = $state<ITask[]>([]);
-	private tagState = GetTagState();
 
 	constructor() {
-		// Initialize with some dummy data
-		this.tasks = [
-			{
-				id: '1',
-				title: 'Task 1',
-				description: 'Testovací task',
-				completed: false,
-				dueDate: new Date(),
-				priority: TaskPriority.Low
-			},
-			{
-				id: '2',
-				title: 'Task 2',
-				completed: true,
-				dueDate: new Date(),
-				priority: TaskPriority.Medium
-			},
-			{
-				id: '3',
-				title: 'Task 3',
-				completed: false,
-				priority: TaskPriority.High,
-				dueDate: new Date(),
-				tag: this.tagState.GetAllTags()[1]
-			}
-		];
+		this.LoadTasksFromStorage();
 	}
 
 	public LoadTasks = (tasks: ITask[]): void => {
 		this.tasks = tasks;
+	};
+
+	private LoadTasksFromStorage = async (): Promise<void> => {
+		const { value } = await Preferences.get({ key: STORAGE_KEY });
+
+		if (value) {
+			const rawData = JSON.parse(value) as ITask[];
+			this.tasks = rawData.map((task) => ({
+				...task,
+				dueDate: task.dueDate ? new Date(task.dueDate) : undefined
+			}));
+		}
+	};
+
+	private SaveTasks = async (): Promise<void> => {
+		await Preferences.set({
+			key: STORAGE_KEY,
+			value: JSON.stringify(this.tasks)
+		});
 	};
 
 	public ClearTasks = (): void => {
@@ -62,22 +57,23 @@ class TaskService {
 		return this.tasks;
 	});
 
-	public GetTasksByTag(tagId: string) {
+	public GetTasksByTag = (tagId: string) => {
 		if (tagId === '0') {
 			return this.tasks;
 		}
 
 		return this.tasks
-			.filter((task) => task.tag?.id === tagId)
+			.filter((task) => task.tagId === tagId)
 			.sort((a, b) => Number(a.completed) - Number(b.completed));
-	}
+	};
 
-	public GetTaskById(taskId: string) {
+	public GetTaskById = $derived<(taskId: string) => ITask | undefined>((taskId) => {
 		return this.tasks.find((task) => task.id === taskId);
-	}
+	});
 
 	public UpdateTask(updatedTask: ITask): void {
 		this.tasks = this.tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task));
+		this.SaveTasks();
 	}
 
 	public GetTasksGroupedByPriority = $derived<() => Record<string, ITask[]>>(() => {
@@ -94,12 +90,12 @@ class TaskService {
 	public GetTasksGroupedByTag = $derived<() => Record<string, ITask[]>>(() => {
 		const tagGroups: Record<string, ITask[]> = {};
 		this.tasks.forEach((task) => {
-			if (!task.tag) return;
+			if (!task.tagId) return;
 
-			if (!tagGroups[task.tag.id]) {
-				tagGroups[task.tag.id] = [];
+			if (!tagGroups[task.tagId]) {
+				tagGroups[task.tagId] = [];
 			}
-			tagGroups[task.tag.id].push(task);
+			tagGroups[task.tagId].push(task);
 		});
 		return tagGroups;
 	});
@@ -125,16 +121,19 @@ class TaskService {
 
 	public AddTask(task: ITask): void {
 		this.tasks.push(task);
+		this.SaveTasks();
 	}
 
 	public RemoveTask(taskId: string): void {
 		this.tasks = this.tasks.filter((task) => task.id !== taskId);
+		this.SaveTasks();
 	}
 
 	public ToggleCompleted(taskId: string, completed: boolean): void {
 		this.tasks = this.tasks.map((task) =>
 			task.id === taskId ? { ...task, completed: completed } : task
 		);
+		this.SaveTasks();
 	}
 }
 

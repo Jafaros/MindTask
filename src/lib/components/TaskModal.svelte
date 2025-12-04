@@ -26,7 +26,7 @@
 			: `${now.getHours() + 2}:00`
 	);
 	let selectedPriority = $state(task ? task.priority : '');
-	let selectedCategory = $state(task && task.tag ? task.tag.id : '');
+	let selectedCategory = $state(task && task.tag ? task.tagId : '');
 	let reminderSet = $state(false);
 
 	function CreateTask() {
@@ -35,7 +35,7 @@
 			title: name,
 			dueDate: new Date(`${dueDate}T${dueTime}`),
 			priority: selectedPriority === '' ? undefined : (selectedPriority as TaskPriority),
-			tag: tagState.GetAllTags().find((tag) => tag.id === selectedCategory) || undefined,
+			tagId: selectedCategory,
 			completed: false
 		};
 
@@ -52,7 +52,7 @@
 			title: name,
 			dueDate: new Date(`${dueDate}T${dueTime}`),
 			priority: selectedPriority === '' ? undefined : (selectedPriority as TaskPriority),
-			tag: tagState.GetAllTags().find((tag) => tag.id === selectedCategory) || undefined
+			tagId: selectedCategory
 		};
 
 		taskState.UpdateTask(updatedTask);
@@ -258,7 +258,7 @@
 				</label>
 
 				<label class="flex flex-col">
-					<span class="mb-1 font-medium">Kategorie</span>
+					<span class="mb-1 font-medium">Štítek</span>
 					<select
 						bind:value={selectedCategory}
 						class="rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"

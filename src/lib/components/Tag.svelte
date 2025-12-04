@@ -2,7 +2,7 @@
 	import type { ITag } from '$lib/services/tag.service.svelte';
 	import { fly } from 'svelte/transition';
 
-	let { tag, i, active, onSelect } = $props<{
+	const { tag, i, active, onSelect } = $props<{
 		tag: ITag;
 		i: number;
 		active: boolean;

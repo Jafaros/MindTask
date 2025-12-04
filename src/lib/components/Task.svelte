@@ -3,6 +3,7 @@
 	import { GetReadableTextFromColor } from '$lib/utils/color';
 	import { fly } from 'svelte/transition';
 	import TaskModal from './TaskModal.svelte';
+	import { GetTagState } from '$lib/services/tag.service.svelte';
 
 	const { task, i, onToggle } = $props<{
 		task: ITask;
@@ -11,6 +12,9 @@
 	}>();
 
 	let taskModalOpen = $state(false);
+
+	const tagState = GetTagState();
+	const tag = $derived(tagState.GetTagById(task.tagId ?? -1));
 </script>
 
 {#if taskModalOpen}
@@ -81,12 +85,11 @@
 				class="rounded-full px-3 py-1 text-xs text-white">{task.priority}</span
 			>
 		{/if}
-		{#if task.tag}
+		{#if tag}
 			<span
 				class="rounded-full px-3 py-1 text-xs"
-				style="background-color: {task.tag.color}; color: {GetReadableTextFromColor(
-					task.tag.color
-				)};">{task.tag.name}</span
+				style="background-color: {tag.color}; color: {GetReadableTextFromColor(tag.color ?? '')};"
+				>{tag.name}</span
 			>
 		{/if}
 	</div>
