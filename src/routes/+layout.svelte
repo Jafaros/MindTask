@@ -4,11 +4,13 @@
 	import Header from '$lib/components/Header.svelte';
 	import { SetTaskState } from '$lib/services/task.service.svelte';
 	import { SetTagState } from '$lib/services/tag.service.svelte';
+	import { SetQuoteState } from '$lib/services/quote.service.svelte';
 
 	let { children } = $props();
 
 	SetTagState();
 	SetTaskState();
+	SetQuoteState();
 </script>
 
 <svelte:head>

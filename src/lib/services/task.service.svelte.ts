@@ -98,6 +98,17 @@ class TaskService {
 		return tagGroups;
 	});
 
+	public GetActiveTasksGroupedByTag = $derived<() => { tagId: string; tasks: ITask[] }[]>(() => {
+		return Object.entries(
+			this.tasks.reduce((groups: Record<string, ITask[]>, task) => {
+				if (!task.tagId || task.completed) return groups;
+
+				(groups[task.tagId] ??= []).push(task);
+				return groups;
+			}, {})
+		).map(([tagId, tasks]) => ({ tagId, tasks }));
+	});
+
 	public GetTasksByTag(tagId: string): ITask[] {
 		const tagState = GetTagState();
 		const tag = tagState.GetTagById(tagId);

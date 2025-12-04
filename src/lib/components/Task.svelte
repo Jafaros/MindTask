@@ -26,7 +26,7 @@
 <div
 	class="flex items-center justify-between gap-5 rounded-lg bg-gray-100 p-4 transition"
 	class:opacity-50={task.completed}
-	in:fly={{ x: -50, delay: i * 50, duration: 200 }}
+	transition:fly={{ x: -50, delay: i * 50, duration: 200 }}
 	onclick={(e) => {
 		e.stopPropagation();
 		taskModalOpen = true;

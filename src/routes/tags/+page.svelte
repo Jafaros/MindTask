@@ -32,7 +32,7 @@
 			{#each tagState.GetAvailableTags() as tag, i (tag.id)}
 				<button
 					in:fly={{ x: 20, delay: i * 50 }}
-					class="flex justify-center rounded-full px-3 py-1 text-lg font-semibold"
+					class="flex justify-center rounded-lg px-3 py-1 text-lg font-semibold"
 					style="background-color: {tag.color}; color: {GetReadableTextFromColor(tag.color ?? '')};"
 					onclick={() => (selectedTask = tag)}
 				>
