@@ -8,7 +8,7 @@ export interface ISettings {
 	darkModeEnabled: boolean;
 }
 
-export const defaultSettings: ISettings = {
+const defaultSettings: ISettings = {
 	displayQuoteOnLaunch: false,
 	darkModeEnabled: false
 };

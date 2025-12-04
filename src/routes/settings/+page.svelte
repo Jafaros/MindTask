@@ -20,7 +20,7 @@
 			<div class="rounded-lg bg-black/10 p-2">
 				<FontAwesomeIcon icon={faMoon} class="text-black/70" />
 			</div>
-			<p class="text-base font-medium">Temný režim</p>
+			<p class="text-base font-medium">Tmavý režim</p>
 		</div>
 
 		<Switch

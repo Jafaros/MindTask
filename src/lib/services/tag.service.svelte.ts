@@ -10,23 +10,33 @@ export interface ITag {
 	assignable: boolean;
 }
 
+const defaultTag: ITag = {
+	id: 'default-dnes',
+	name: 'Dnes',
+	assignable: false
+};
+
 class TagService {
-	private tags = $state<ITag[]>([]);
+	private tags = $state<ITag[]>([defaultTag]);
 
 	constructor() {
 		this.LoadTagsFromStorage();
 	}
 
 	public LoadTags = (tags: ITag[]): void => {
-		this.tags = tags;
+		const userTags = tags.filter((t) => t.id !== defaultTag.id);
+		this.tags = [defaultTag, ...userTags];
 	};
 
 	private LoadTagsFromStorage = async (): Promise<void> => {
 		const { value } = await Preferences.get({ key: STORAGE_KEY });
 
-		if (value) {
-			this.tags = JSON.parse(value) as ITag[];
-		}
+		if (!value) return;
+
+		const loaded: ITag[] = JSON.parse(value);
+		const userTags = loaded.filter((t) => t.id !== defaultTag.id);
+
+		this.tags = [defaultTag, ...userTags];
 	};
 
 	private SaveTags = async (): Promise<void> => {
