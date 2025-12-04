@@ -5,7 +5,6 @@
 	import { SetTaskState } from '$lib/services/task.service.svelte';
 	import { SetTagState } from '$lib/services/tag.service.svelte';
 	import { GetQuoteState, SetQuoteState, type IQuote } from '$lib/services/quote.service.svelte';
-	import { onMount } from 'svelte';
 	import QuoteModal from '$lib/components/QuoteModal.svelte';
 	import { GetSettingsState, SetSettingsState } from '$lib/services/settings.service.svelte';
 

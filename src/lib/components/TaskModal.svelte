@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { GetTagState } from '$lib/services/tag.service.svelte';
 	import { GetTaskState, TaskPriority, type ITask } from '$lib/services/task.service.svelte';
-	import { fade } from 'svelte/transition';
+	import { fade, slide } from 'svelte/transition';
 	import Switch from './Switch.svelte';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { faClose } from '@fortawesome/free-solid-svg-icons';
@@ -121,7 +121,7 @@
 				</div>
 
 				{#if reminderSet}
-					<div class="flex items-end gap-2">
+					<div class="flex items-end gap-2" transition:slide>
 						<label class="flex flex-col">
 							<span class="mb-1 font-medium">Datum připomenutí</span>
 							<input
