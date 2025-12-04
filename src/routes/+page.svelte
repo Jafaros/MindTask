@@ -8,18 +8,15 @@
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import TaskModal from '$lib/components/TaskModal.svelte';
-	import { GetQuoteState } from '$lib/services/quote.service.svelte';
 
 	const taskState = GetTaskState();
 	const tagState = GetTagState();
-	const quoteState = GetQuoteState();
 
 	let activeTag = $derived<ITag | null>(tagState.GetAllTags()[0] || null);
 
 	let mounted = $state(false);
 
 	onMount(() => {
-		quoteState.FetchQuoteFromAPI();
 		mounted = true;
 	});
 

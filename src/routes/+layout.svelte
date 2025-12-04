@@ -4,13 +4,23 @@
 	import Header from '$lib/components/Header.svelte';
 	import { SetTaskState } from '$lib/services/task.service.svelte';
 	import { SetTagState } from '$lib/services/tag.service.svelte';
-	import { SetQuoteState } from '$lib/services/quote.service.svelte';
+	import { GetQuoteState, SetQuoteState, type IQuote } from '$lib/services/quote.service.svelte';
+	import { onMount } from 'svelte';
+	import QuoteModal from '$lib/components/QuoteModal.svelte';
 
 	let { children } = $props();
 
 	SetTagState();
 	SetTaskState();
 	SetQuoteState();
+
+	const quoteState = GetQuoteState();
+	let quote = $state<IQuote | undefined>(undefined);
+	let quoteModalVisible = $state<boolean>(true);
+
+	onMount(async () => {
+		quote = await quoteState.FetchRandomQuoteFromAPI();
+	});
 </script>
 
 <svelte:head>
@@ -24,6 +34,10 @@
 </svelte:head>
 
 <Header />
+
+{#if quote && quoteModalVisible}
+	<QuoteModal {quote} onClose={() => (quoteModalVisible = false)} />
+{/if}
 
 <div class="border-box relative bg-white p-5 text-black">
 	{@render children()}

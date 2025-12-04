@@ -2,7 +2,7 @@ import { getContext, setContext } from 'svelte';
 import { Preferences } from '@capacitor/preferences';
 
 const STORAGE_KEY = 'mindtask_quotes';
-const QUOTE_API_URL = 'https://dummyjson.com';
+const QUOTE_API_URL = 'https://api.realinspire.live/v1/';
 
 /*const topics = [
 	'success',
@@ -40,7 +40,7 @@ class QuoteService {
 		}
 	};
 
-	public async FetchQuoteFromAPI(): Promise<void> {
+	public async FetchRandomQuoteFromAPI(): Promise<IQuote | undefined> {
 		const response = await fetch(`${QUOTE_API_URL}/quotes/random`, {
 			method: 'GET',
 			headers: {
@@ -51,8 +51,8 @@ class QuoteService {
 		const result = await response.json();
 
 		if (response.ok) {
-			const quote: IQuote = { text: result.quote, author: result.author } as IQuote;
-			console.log(quote);
+			const quote: IQuote = { text: result[0].content, author: result[0].author } as IQuote;
+			return quote;
 		}
 	}
 
@@ -63,9 +63,21 @@ class QuoteService {
 		});
 	};
 
+	public ToggleQuote = (quote: IQuote): void => {
+		if (this.isSaved(quote)) this.RemoveQuote(quote.id);
+		else this.AddQuote(quote);
+	};
+
 	public AddQuote = (quote: IQuote): void => {
+		quote.id = crypto.randomUUID();
 		this.quotes.push(quote);
 		this.SaveQuotes();
+	};
+
+	public isSaved = (quote: IQuote): boolean => {
+		const savedQuote = this.quotes.filter((q) => q.author === quote.author && q.text == quote.text);
+		console.log(savedQuote);
+		return savedQuote.length > 0 ? true : false;
 	};
 
 	public RemoveQuote = (quoteId: string): void => {
