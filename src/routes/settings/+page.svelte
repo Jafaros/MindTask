@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Switch from '$lib/components/Switch.svelte';
 	import { GetSettingsState } from '$lib/services/settings.service.svelte';
-	import { faMoon } from '@fortawesome/free-regular-svg-icons';
+	// import { faMoon } from '@fortawesome/free-regular-svg-icons';
 	import { faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 

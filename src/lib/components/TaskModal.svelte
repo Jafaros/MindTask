@@ -26,8 +26,19 @@
 			: `${now.getHours() + 2}:00`
 	);
 	let selectedPriority = $state(task ? task.priority : '');
-	let selectedCategory = $state(task && task.tag ? task.tagId : '');
-	let reminderSet = $state(false);
+	let selectedCategory = $state(task && task.tagId ? task.tagId : '');
+
+	let reminderSet = $state(task && task.notificationDate);
+	let reminderDate = $state(
+		task && task.notificationDate
+			? task?.notificationDate.toISOString().split('T')[0]
+			: now.toISOString().split('T')[0]
+	);
+	let reminderTime = $state(
+		task && task.notificationDate
+			? task?.notificationDate.toLocaleString('cs-CZ', { hour: 'numeric', minute: 'numeric' })
+			: `${now.getHours() + 1}:00`
+	);
 
 	function CreateTask() {
 		const task: ITask = {
@@ -38,6 +49,10 @@
 			tagId: selectedCategory,
 			completed: false
 		};
+
+		if (reminderSet) {
+			task.notificationDate = new Date(`${reminderDate}T${reminderTime}`);
+		}
 
 		taskState.AddTask(task);
 
@@ -54,6 +69,10 @@
 			priority: selectedPriority === '' ? undefined : (selectedPriority as TaskPriority),
 			tagId: selectedCategory
 		};
+
+		if (reminderSet) {
+			updatedTask.notificationDate = new Date(`${reminderDate}T${reminderTime}`);
+		}
 
 		taskState.UpdateTask(updatedTask);
 
@@ -126,7 +145,7 @@
 							<span class="mb-1 font-medium">Datum připomenutí</span>
 							<input
 								type="date"
-								bind:value={dueDate}
+								bind:value={reminderDate}
 								class="rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
 							/>
 						</label>
@@ -135,7 +154,7 @@
 							<span class="mb-1 font-medium">Čas</span>
 							<input
 								type="time"
-								bind:value={dueTime}
+								bind:value={reminderTime}
 								class="rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
 							/>
 						</label>
@@ -227,7 +246,7 @@
 							<span class="mb-1 font-medium">Datum připomenutí</span>
 							<input
 								type="date"
-								bind:value={dueDate}
+								bind:value={reminderDate}
 								class="rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
 							/>
 						</label>
@@ -236,7 +255,7 @@
 							<span class="mb-1 font-medium">Čas</span>
 							<input
 								type="time"
-								bind:value={dueTime}
+								bind:value={reminderTime}
 								class="rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
 							/>
 						</label>

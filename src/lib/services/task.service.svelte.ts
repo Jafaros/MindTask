@@ -1,6 +1,7 @@
 import { getContext, setContext } from 'svelte';
 import { Preferences } from '@capacitor/preferences';
 import { GetTagState } from './tag.service.svelte';
+import { NotificationService } from './notification.service';
 
 const STORAGE_KEY = 'mindtask_tasks';
 
@@ -10,6 +11,7 @@ export interface ITask {
 	description?: string;
 	completed: boolean;
 	dueDate?: Date;
+	notificationDate?: Date;
 	priority?: TaskPriority;
 	tagId?: string;
 }
@@ -45,7 +47,8 @@ class TaskService {
 			const rawData = JSON.parse(value) as ITask[];
 			this.tasks = rawData.map((task) => ({
 				...task,
-				dueDate: task.dueDate ? new Date(task.dueDate) : undefined
+				dueDate: task.dueDate ? new Date(task.dueDate) : undefined,
+				notificationDate: task.notificationDate ? new Date(task.notificationDate) : undefined
 			}));
 		}
 	};
@@ -68,11 +71,6 @@ class TaskService {
 	public GetTaskById = $derived<(taskId: string) => ITask | undefined>((taskId) => {
 		return this.tasks.find((task) => task.id === taskId);
 	});
-
-	public UpdateTask(updatedTask: ITask): void {
-		this.tasks = this.tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task));
-		this.SaveTasks();
-	}
 
 	public GetTasksGroupedByPriority = $derived<() => Record<string, ITask[]>>(() => {
 		return this.tasks.reduce((groups: Record<string, ITask[]>, task) => {
@@ -152,17 +150,48 @@ class TaskService {
 	public AddTask(task: ITask): void {
 		this.tasks.push(task);
 		this.SaveTasks();
+
+		if (task.notificationDate) {
+			NotificationService.scheduleTaskNotification(task.id, task.title, task.notificationDate);
+		}
+	}
+
+	public UpdateTask(updatedTask: ITask): void {
+		this.tasks = this.tasks.map((task) => {
+			if (task.id === updatedTask.id) {
+				NotificationService.cancelTaskNotification(task.id);
+
+				if (updatedTask.notificationDate && !updatedTask.completed) {
+					NotificationService.scheduleTaskNotification(
+						updatedTask.id,
+						updatedTask.title,
+						updatedTask.notificationDate
+					);
+				}
+
+				return updatedTask;
+			}
+			return task;
+		});
+		this.SaveTasks();
 	}
 
 	public RemoveTask(taskId: string): void {
+		NotificationService.cancelTaskNotification(taskId);
 		this.tasks = this.tasks.filter((task) => task.id !== taskId);
 		this.SaveTasks();
 	}
 
 	public ToggleCompleted(taskId: string, completed: boolean): void {
-		this.tasks = this.tasks.map((task) =>
-			task.id === taskId ? { ...task, completed: completed } : task
-		);
+		this.tasks = this.tasks.map((task) => {
+			if (task.id === taskId) {
+				if (completed) {
+					NotificationService.cancelTaskNotification(taskId);
+				}
+				return { ...task, completed };
+			}
+			return task;
+		});
 		this.SaveTasks();
 	}
 }

@@ -7,8 +7,11 @@
 	import { GetQuoteState, SetQuoteState, type IQuote } from '$lib/services/quote.service.svelte';
 	import QuoteModal from '$lib/components/QuoteModal.svelte';
 	import { GetSettingsState, SetSettingsState } from '$lib/services/settings.service.svelte';
+	import { NotificationService } from '$lib/services/notification.service';
 
 	let { children } = $props();
+
+	NotificationService.init();
 
 	SetSettingsState();
 	SetTagState();
