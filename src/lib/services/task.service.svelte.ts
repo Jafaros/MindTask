@@ -99,9 +99,11 @@ class TaskService {
 	public GetActiveTasksGroupedByTag = $derived<() => { tagId: string; tasks: ITask[] }[]>(() => {
 		return Object.entries(
 			this.tasks.reduce((groups: Record<string, ITask[]>, task) => {
-				if (!task.tagId || task.completed) return groups;
+				if (task.completed) return groups;
 
-				(groups[task.tagId] ??= []).push(task);
+				if (!task.tagId) (groups['default-others'] ??= []).push(task);
+				else (groups[task.tagId] ??= []).push(task);
+
 				return groups;
 			}, {})
 		).map(([tagId, tasks]) => ({ tagId, tasks }));
@@ -111,8 +113,12 @@ class TaskService {
 		const tagState = GetTagState();
 		const tag = tagState.GetTagById(tagId);
 
-		if (tag?.name === 'Dnes' && !tag.assignable) {
+		if (tag?.id === 'default-today' && !tag.assignable) {
 			return this.GetTasksDueToday();
+		}
+
+		if (tag?.id === 'default-others') {
+			return this.GetOtherTasks();
 		}
 
 		return this.tasks
@@ -120,12 +126,16 @@ class TaskService {
 			.sort((a, b) => Number(a.completed) - Number(b.completed));
 	}
 
+	private GetOtherTasks(): ITask[] {
+		return this.tasks.filter((t) => !t.tagId);
+	}
+
 	public GetTasksDueToday(): ITask[] {
 		const today = new Date();
 		return this.tasks
 			.filter((task) => {
 				if (!task.dueDate) return false;
-				const dueDate = new Date(task.dueDate);
+				const dueDate = task.dueDate;
 				return dueDate.toDateString() === today.toDateString();
 			})
 			.sort((a, b) => Number(a.completed) - Number(b.completed));
@@ -139,6 +149,26 @@ class TaskService {
 				const pb = priorityOrder[b.priority ?? 'none'];
 				return pa - pb; // lower number = higher priority
 			});
+	});
+
+	public GetCompletedTasksByGroup = $derived<() => { tagId: string; tasks: ITask[] }[]>(() => {
+		return Object.entries(
+			this.tasks.reduce((groups: Record<string, ITask[]>, task) => {
+				if (!task.completed) return groups;
+
+				if (!task.tagId) (groups['default-others'] ??= []).push(task);
+				else (groups[task.tagId] ??= []).push(task);
+				return groups;
+			}, {})
+		).map(([tagId, tasks]) => ({
+			tagId,
+			tasks: tasks.sort((a, b) => {
+				if (!a.dueDate && !b.dueDate) return 0;
+				if (!a.dueDate) return 1;
+				if (!b.dueDate) return -1;
+				return a.dueDate.getTime() - b.dueDate.getTime();
+			})
+		}));
 	});
 
 	public GetTasksByName = (searchTerm: string): ITask[] => {

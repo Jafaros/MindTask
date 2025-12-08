@@ -11,13 +11,19 @@ export interface ITag {
 }
 
 const defaultTag: ITag = {
-	id: 'default-dnes',
+	id: 'default-today',
 	name: 'Dnes',
 	assignable: false
 };
 
+const defaultTagOthers: ITag = {
+	id: 'default-others',
+	name: 'Ostatní',
+	assignable: false
+};
+
 class TagService {
-	private tags = $state<ITag[]>([defaultTag]);
+	private tags = $state<ITag[]>([defaultTag, defaultTagOthers]);
 
 	constructor() {
 		this.LoadTagsFromStorage();
@@ -25,7 +31,7 @@ class TagService {
 
 	public LoadTags = (tags: ITag[]): void => {
 		const userTags = tags.filter((t) => t.id !== defaultTag.id);
-		this.tags = [defaultTag, ...userTags];
+		this.tags = [defaultTag, ...userTags, defaultTagOthers];
 	};
 
 	private LoadTagsFromStorage = async (): Promise<void> => {
@@ -34,9 +40,9 @@ class TagService {
 		if (!value) return;
 
 		const loaded: ITag[] = JSON.parse(value);
-		const userTags = loaded.filter((t) => t.id !== defaultTag.id);
+		const userTags = loaded.filter((t) => t.id !== defaultTag.id && t.id !== defaultTagOthers.id);
 
-		this.tags = [defaultTag, ...userTags];
+		this.tags = [defaultTag, ...userTags, defaultTagOthers];
 	};
 
 	private SaveTags = async (): Promise<void> => {

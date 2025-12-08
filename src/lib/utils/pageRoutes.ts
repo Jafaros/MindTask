@@ -1,6 +1,7 @@
 import type { FontAwesomeIconProps } from '@fortawesome/svelte-fontawesome';
 import { faGear, faList, faFlag } from '@fortawesome/free-solid-svg-icons';
 import { faHouse } from '@fortawesome/free-regular-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 
 export interface PageRoute {
 	path: string;
@@ -18,6 +19,11 @@ export const pageRoutes: PageRoute[] = [
 		path: '/tasks',
 		title: 'Všechny aktivní úkoly',
 		icon: faList
+	},
+	{
+		path: '/completed',
+		title: 'Splněné úkoly',
+		icon: faCheck
 	},
 	{
 		path: '/tags',
