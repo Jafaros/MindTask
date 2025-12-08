@@ -12,6 +12,7 @@
 </script>
 
 <div class="flex flex-col gap-4">
+	<!-- Možná v jiné verzi
 	<div
 		class="flex items-center justify-between rounded-xl bg-black/5 px-3 py-2
 		       backdrop-blur-sm transition-all hover:bg-black/10 active:scale-[0.98]"
@@ -28,6 +29,7 @@
 			onChange={() => settingsState.SetDarkModeEnabled(darkModeEnabled)}
 		/>
 	</div>
+	-->
 
 	<div
 		class="flex items-center justify-between rounded-xl bg-black/5 px-3 py-2
